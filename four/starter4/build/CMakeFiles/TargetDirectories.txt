@@ -1,0 +1,2 @@
+/Users/victoriamessuri/Desktop/Scott/6.837/four/starter4/build/vecmath/CMakeFiles/vecmath.dir
+/Users/victoriamessuri/Desktop/Scott/6.837/four/starter4/build/src/CMakeFiles/a4.dir

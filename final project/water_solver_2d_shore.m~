@@ -1,0 +1,275 @@
+close all;
+clear all;
+clc; 
+
+%clear out png folder, 
+png='pngfolder2';
+%rmdir(png); 
+mkdir(png); 
+
+mesh='meshfolder2';
+mkdir(mesh); 
+
+%2D solver
+
+N=100;
+M=N; 
+
+h0=zeros(N,M);
+h1=zeros(N,M); 
+hnew=zeros(N,M); 
+
+g=2;
+xmax=60; 
+ymax=xmax; 
+
+%dt=0.005; %0.01
+dt=0.05; 
+%dt=0.0025; 
+
+x=linspace(0,xmax,N);
+y=linspace(0,ymax,M);
+dx=x(1,2)-x(1,1); 
+dy=y(1,2)-y(1,1); 
+
+b0=1.5; 
+
+%initialize uniform depth 
+%b=ones(N,M)*b0; 
+
+%use cone pattern to create "shoreline"
+
+b=zeros(N,M); 
+
+z0=3;  %cone height 
+alpha=(75/180)*pi;  %cone angle 
+
+%use offsets so cone top is not in the corner 
+offsetx=15;
+offsety=-30; 
+
+for n=1:1:N
+    for m=1:1:M
+        b(n,m)=z0-cot(alpha)*((x(1,n)-offsetx)^2+(y(1,m)-offsety)^2)^0.5; 
+    end
+end
+
+%plot shore for reference
+figure;
+surf(x,y,b);
+axis equal; 
+
+%create mesh for background we can use in rendering 
+createObj([mesh,'/back_mesh.obj'],x,y,b); 
+
+%return; 
+
+%create sine pattern for depth 
+%b=b0/2*cos(4*pi/(xmax)*x)+b0/2;
+%b=b'; 
+
+sig=xmax/20; 
+angle=0/180*pi; %angle incident to shore line
+
+wh=-10; %adjust height of water along the shoreline 
+
+%very important! causes strange artifacts if
+%too big compared to timestep, greatly effects way fluid looks on the 
+%surface! 
+epsilon=0.00001;
+
+%initialize fluid in only right "hump"
+for n=1:1:N
+    for m=1:1:M
+    
+        %this creates gaussian wave initial condition 
+        %d2=(x(1,n)-x(1,N/2))^2+(y(1,m)-y(1,3*N/4))^2; 
+        %need to make sure the waves are not too shallow!
+        %this can cause weird numerical problems 
+        %h0(n,m)=wh+2.0*exp(-d2/sig^2);
+        
+        %we want to create a single "gaussian type wave" to be incident on
+        %the beach 
+        d2=(y(1,m)-y(1,3*N/4)-(x(1,n)-x(1,1))*tan(angle))^2; 
+        h0(n,m)=wh+8.0*exp(-d2/sig^2);
+        
+        %h0(n,m)=wh; 
+        
+        %we want initial conditions for shore to be appropriate
+        if(h0(n,m)<b(n,m))
+            h0(n,m)=b(n,m)-epsilon; 
+        end
+        h1(n,m)=h0(n,m);
+    
+    end
+end
+
+
+
+figure;
+surf(x,y,h0);
+title('h0');
+
+%figure;
+%plot(x,h1);
+%title('h1');
+
+stepdiv=40; 
+steps=700;  %*10
+
+%specify several sin drivers in height field to make pretty drop effects,
+%we can think about more elaborate things with this 
+
+Ns=2; 
+amps=zeros(1,Ns);
+freqs=zeros(1,Ns); 
+offset=zeros(1,Ns); 
+
+c=1; 
+amps(1,c)=3;
+freqs(1,c)=2*pi/(10); %driving frequency 
+offset(1,c)=wh; 
+c=c+1;
+
+
+%implement alternating direction method 
+
+%calculate initial volume for reference 
+[h,V0]=conserveVolume3D(h1,h0,b); 
+
+t=0; 
+imagecount=0; 
+
+for n=1:1:steps
+   
+    %compute depth
+    
+    t=t+dt; 
+    
+    
+    %go through and insert height driving term 
+    for ns=1:1:0
+        %use gaussian falloff for range of perturbation to make look
+        %prettier 
+        %limit range we apply perturbation t0 +/- rag with gaussian weight
+        for nx=1:1:N
+            h1(nx,M)=amps(1,ns)*sin(t*freqs(1,ns))+offset(1,ns); 
+        end
+        %disp(h1(pos(1,ns),pos(2,ns))); 
+    end 
+    
+    
+    
+    %do calculations along all rows
+    for nx=1:1:N
+        hnew(:,nx)=computeHnewX(b(:,nx),h0(:,nx),h1(:,nx),dx,N,g,dt);
+        h0(:,nx)=h1(:,nx);
+        h1(:,nx)=hnew(:,nx); 
+        
+        %do volume conserving and correction steps every sub-iteration
+        %instead of at the end of all iterations
+        %[h,V]=conserveVolume3D(h1,h0,b); 
+        
+        %{
+        for ny=1:1:M
+            if(h1(ny,nx)<b(ny,nx))
+                h1(ny,nx)=b(ny,nx)-epsilon; 
+                h0(ny,nx)=b(ny,nx)-epsilon; 
+            end 
+        end
+        %}
+        
+    end
+    
+    
+    %do calculations along all columns 
+    for ny=1:1:M
+        hnew(ny,:)=computeHnewX(b(ny,:)',h0(ny,:)',h1(ny,:)',dy,M,g,dt)';
+        h0(ny,:)=h1(ny,:);
+        h1(ny,:)=hnew(ny,:); 
+        
+        %do volume conserving and correction steps every sub-iteration
+        %instead of at the end of all iterations
+        %[h,V]=conserveVolume3D(h1,h0,b); 
+        
+        %{
+        for nx=1:1:N
+            if(h1(ny,nx)<b(ny,nx))
+                h1(ny,nx)=b(ny,nx)-epsilon; 
+                h0(ny,nx)=b(ny,nx)-epsilon; 
+            end 
+        end
+        %}
+        
+    end
+    
+    %lets do some spatial filtering to remove sharp features which 
+    %do not look good/ small pockets of water
+    
+    %can't filter here, causes simulation to explode 
+    
+    %disp('step'); 
+    %disp(n);
+    [h1,V]=conserveVolume3D(h1,h0,b);
+    
+    %%check condition 
+    for ny=1:1:M
+        for nx=1:1:N
+            if(h1(nx,ny)<b(nx,ny))
+                h1(nx,ny)=b(nx,ny)-epsilon; 
+                h0(nx,ny)=b(nx,ny)-epsilon; 
+            end 
+        end
+    end
+    
+    
+    %hview=(h1-2)*100;  %put in reasonable scale for viewing as mesh, 
+                      %we exaggerate features 
+    
+    %if(n==57 || n==68 || n==69)
+    if(mod(n-1,stepdiv)==0)
+        
+        hview=myfilter(h1); %create filtered version for mesh and display
+        
+        imagecount=imagecount+1; 
+        
+        f = figure('visible','on'); 
+        %figure; 
+        hold on; 
+        
+        
+        surf(x,y,b); 
+        colormap([1,1,0]);
+        freezeColors; 
+        surf(x,y,hview);
+        colormap([0,0,1]); 
+        freezeColors;
+        axis equal; 
+        view(40,35); 
+        %grid off;
+        
+  
+        %area(x,h1,'FaceColor','b');  %plot water
+        %plot(y,reshape(b(1,:),[1,M]),'Color','k'); %plot ground
+        %plot(y,reshape(h1(1,:),[1,M])); 
+        
+        v=0.2; 
+        %zlim([-2,2]); 
+        pause(0.02); 
+        
+        
+        %createObj([mesh,'/water_mesh',sprintf('%d',imagecount),'.obj'],x,y,hview); 
+        %print([png,'/image',sprintf('%d',imagecount)],'-dpng'); 
+        fprintf('%d of %d complete \n',imagecount,floor(steps/stepdiv));
+        fprintf('volume %f initial %f \n',V,V0);
+    end
+    
+end
+
+
+
+
+
+
+
+

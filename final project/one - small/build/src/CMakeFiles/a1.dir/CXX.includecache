@@ -1,0 +1,150 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../vecmath/include/Matrix2f.h
+cstdio
+-
+
+../vecmath/include/Matrix3f.h
+cstdio
+-
+
+../vecmath/include/Matrix4f.h
+cstdio
+-
+
+../vecmath/include/Quat4f.h
+Matrix3f.h
+../vecmath/include/Matrix3f.h
+
+../vecmath/include/Vector2f.h
+cmath
+-
+
+../vecmath/include/Vector3f.h
+
+../vecmath/include/Vector4f.h
+
+../vecmath/include/vecmath.h
+Matrix2f.h
+../vecmath/include/Matrix2f.h
+Matrix3f.h
+../vecmath/include/Matrix3f.h
+Matrix4f.h
+../vecmath/include/Matrix4f.h
+Quat4f.h
+../vecmath/include/Quat4f.h
+Vector2f.h
+../vecmath/include/Vector2f.h
+Vector3f.h
+../vecmath/include/Vector3f.h
+Vector4f.h
+../vecmath/include/Vector4f.h
+
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/camera.cpp
+camera.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/camera.h
+extra.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/extra.h
+iostream
+-
+
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/camera.h
+vecmath.h
+-
+
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/curve.cpp
+curve.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/curve.h
+extra.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/extra.h
+
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/curve.h
+tuple.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/tuple.h
+vecmath.h
+-
+vector
+-
+
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/extra.h
+windows.h
+-
+GLUT/glut.h
+-
+GL/glut.h
+-
+
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/main.cpp
+cmath
+-
+iostream
+-
+cstdlib
+-
+fstream
+-
+vector
+-
+vecmath.h
+-
+parse.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/parse.h
+curve.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/curve.h
+surf.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/surf.h
+extra.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/extra.h
+camera.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/camera.h
+
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/parse.cpp
+parse.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/parse.h
+map
+-
+
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/parse.h
+curve.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/curve.h
+surf.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/surf.h
+iostream
+-
+string
+-
+
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/surf.cpp
+surf.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/surf.h
+extra.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/extra.h
+math.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/math.h
+
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/surf.h
+curve.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/curve.h
+tuple.h
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/tuple.h
+iostream
+-
+
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/src/tuple.h
+cstdarg
+-
+cstdio
+-
+cstdlib
+-
+cstring
+-
+iostream
+-
+

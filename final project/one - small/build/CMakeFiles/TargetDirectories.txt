@@ -1,0 +1,2 @@
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/build/src/CMakeFiles/a1.dir
+/Users/victoriamessuri/Desktop/Scott/6.837/final project/one - small/build/vecmath/CMakeFiles/vecmath.dir

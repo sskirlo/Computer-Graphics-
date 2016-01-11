@@ -1,0 +1,51 @@
+Args:
+- input: runner.txt
+- output: resultfolder2/water234.png
+- depth_file: 
+- normals_file: normal.png
+- width: 300
+- height: 300
+- depth_min: 0
+- depth_max: 1
+- bounces: 3
+- shadows: 0
+- jitter: 1
+- filter: 1
+loaded png cubeMap2/left.png
+loaded png cubeMap2/right.png
+loaded png cubeMap2/up.png
+loaded png cubeMap2/down.png
+loaded png cubeMap2/front.png
+loaded png cubeMap2/back.png
+0
+30
+60
+90
+120
+150
+180
+210
+240
+270
+300
+330
+360
+390
+420
+450
+480
+510
+540
+570
+600
+630
+660
+690
+720
+750
+780
+810
+840
+870
+tmin 26.4648Tmax 37.5019
+assuming image size divisible by 3

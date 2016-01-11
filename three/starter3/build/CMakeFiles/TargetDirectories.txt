@@ -1,0 +1,2 @@
+/Users/victoriamessuri/Desktop/Scott/6.837/three/starter3/build/vecmath/CMakeFiles/vecmath.dir
+/Users/victoriamessuri/Desktop/Scott/6.837/three/starter3/build/src/CMakeFiles/a3.dir

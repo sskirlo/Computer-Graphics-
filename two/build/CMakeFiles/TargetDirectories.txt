@@ -1,0 +1,2 @@
+/Users/victoriamessuri/Desktop/Scott/6.837/two/build/src/CMakeFiles/a1.dir
+/Users/victoriamessuri/Desktop/Scott/6.837/two/build/vecmath/CMakeFiles/vecmath.dir

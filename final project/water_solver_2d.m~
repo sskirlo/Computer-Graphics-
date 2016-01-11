@@ -1,0 +1,118 @@
+close all;
+clear all;
+clc; 
+
+
+%2D solver
+
+N=100;
+M=N; 
+
+h0=zeros(N,M);
+h1=zeros(N,M); 
+hnew=zeros(N,M); 
+
+omega=1/5;
+a=1; 
+
+g=2;
+xmax=10; 
+ymax=xmax; 
+
+dt=0.05; 
+
+x=linspace(0,xmax,N);
+y=linspace(0,ymax,M);
+dx=x(1,2)-x(1,1); 
+dy=y(1,2)-y(1,1); 
+
+b0=1.5; 
+
+%initialize uniform depth 
+b=ones(N,M)*b0; 
+
+%create sine pattern for depth 
+%b=b0/2*cos(4*pi/(xmax)*x)+b0/2;
+%b=b'; 
+
+sig=xmax/20; 
+
+%initialize fluid in only right "hump"
+for n=1:1:N
+    for m=1:1:M
+    
+        %this creates gaussian wave initial condition 
+        d2=(x(1,n)-x(1,N/2))^2+(y(1,m)-x(1,M/2))^2
+        h0(n,1)=b0*1.0+0.3*exp(-d2/sig^2);
+        h1(n,1)=h0(n,1);
+    
+    end
+end
+
+
+
+figure;
+surf(x,y,h0);
+title('h0');
+
+%figure;
+%plot(x,h1);
+%title('h1');
+
+stepdiv=10; 
+steps=400; 
+
+%implement alternating direction method 
+
+for n=1:1:80
+   
+    %compute depth
+    
+    d=h1-b; 
+    
+    for nx=1:1:N
+    
+        computeHnewX(b,h0,h1,dx,N);
+        
+    end
+    
+    %disp('step'); 
+    %disp(n);
+    %hnew=conserveVolume(h1,hnew,b); 
+    
+    h0=h1;
+    h1=hnew; 
+    
+    %{
+    %epsilon=0.001; 
+    %%check condition 
+    for nx=1:1:N
+        if(h1(nx,1)<b(nx,1))
+            h1(nx,1)=b(nx,1)-epsilon; 
+            h0(nx,1)=b(nx,1)-epsilon; 
+        end 
+    end
+    %}
+    
+    
+    
+    if(n==57 || n==68 || n==69)
+    %if(mod(n-1,stepdiv)==0)
+        figure;
+        hold on; 
+        area(x,h1,'FaceColor','b');  %plot water
+        %area(x,b,'FaceColor','k'); %plot ground
+        plot(x,b); 
+        ylim([0,b0*1.5]); 
+        pause(0.05); 
+    end
+    
+end
+
+
+
+
+
+
+
+
